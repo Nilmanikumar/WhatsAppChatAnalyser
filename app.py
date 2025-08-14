@@ -105,7 +105,7 @@ if st.sidebar.button("Show Analysis"):
         plt.xticks(rotation = 90)
         st.pyplot(fig)
     with col2:
-        st.title('Hourly TActivity')
+        st.title('Hourly Activity')
         timeline = helper.get_hourly_timeline(selected_user,df)
         fig,ax = plt.subplots()
         ax.bar(timeline['hour'],timeline['message'],color='#F28E2B',edgecolor='#B05E00')
