@@ -2,9 +2,11 @@ import streamlit as st
 import preprocess,helper
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
-
-
-st.set_page_config(layout="wide")
+st.set_page_config(
+    layout="wide",
+    page_title="Chat Analyser",
+    page_icon="U+1F4AC"
+)
 st.sidebar.title("Whatsapp Chat Analyzer")
 uploaded_file = st.sidebar.file_uploader("Choose a file")
 if uploaded_file is not None:
