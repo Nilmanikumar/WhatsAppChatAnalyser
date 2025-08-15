@@ -47,7 +47,7 @@ def get_words(selected_user,df):
     words = []
     for message in df['message']:
         for word in message.lower().split():
-            if word not in text_stopw and word not in  ["<Media omitted>\n","<media","omitted>","null","deleted","message","waiting"]:
+            if word not in text_stopw and word not in  ["<Media omitted>\n","<media","omitted>","null","deleted","message","waiting","<this","edited>"]:
                 words.append(word)
     return pd.DataFrame(Counter(words).most_common(20),columns=["words","count"])
 
