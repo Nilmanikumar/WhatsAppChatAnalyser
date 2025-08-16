@@ -5,7 +5,10 @@ def preprocess(data)->pd.DataFrame:
     messages = re.split(pattern,data)[1:]
     dates = re.findall(pattern,data)
     df = pd.DataFrame({'user_message':messages,'message_date':dates})
-    df['message_date'] = pd.to_datetime(df['message_date'],format = "%d/%m/%y, %I:%M\u202f%p - ")
+    try:
+        df['message_date'] = pd.to_datetime(df['message_date'],format = "%d/%m/%y, %I:%M\u202f%p - ")
+    except:
+        df['message_date'] = pd.to_datetime(df['message_date'],format = "%d/%m/%Y, %I:%M\u202f%p - ")
     df.rename(columns={'message_date' : 'date'},inplace=True)
     users = []
     messages = []
