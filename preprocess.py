@@ -1,15 +1,32 @@
 import re
 import pandas as pd
 def preprocess(data)->pd.DataFrame:
-    pattern = '\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s(?:am|pm)\s-\s'
+    pattern = '\d{1,2}/\d{1,2}/\d{2,4},\s(?:\d{1,2}:\d{2}(?:[\s\u202f]?(?:am|pm|AM|PM))?)\s-\s'
     messages = re.split(pattern,data)[1:]
     dates = re.findall(pattern,data)
     df = pd.DataFrame({'user_message':messages,'message_date':dates})
-    try:
-        df['message_date'] = pd.to_datetime(df['message_date'],format = "%d/%m/%y, %I:%M\u202f%p - ")
-    except:
-        df['message_date'] = pd.to_datetime(df['message_date'],format = "%d/%m/%Y, %I:%M\u202f%p - ")
-    df.rename(columns={'message_date' : 'date'},inplace=True)
+    # try:
+    #     df['message_date'] = pd.to_datetime(df['message_date'],format = "%d/%m/%y, %I:%M\u202f%p - ")
+    # except:
+    #     df['message_date'] = pd.to_datetime(df['message_date'],format = "%d/%m/%Y, %I:%M\u202f%p - ")
+    formats = [
+    "%d/%m/%y, %I:%M\u202f%p - ",   # 12h, 2-digit year, normal space
+    "%d/%m/%y, %I:%M\u202f%p - ", # 12h, 2-digit year, narrow space
+    "%d/%m/%Y, %I:%M\u202f%p - ",   # 12h, 4-digit year, normal space
+    "%d/%m/%Y, %I:%M\u202f%p - ", # 12h, 4-digit year, narrow space
+    "%d/%m/%y, %H:%M\u202f- ",      # 24h, 2-digit year
+    "%d/%m/%Y, %H:%M\u202f- ",      # 24h, 4-digit year
+    "%m/%d/%y, %I:%M\u202f%p - "
+]
+
+    for fmt in formats:
+        try:
+            df['message_date'] = pd.to_datetime(df['message_date'], format=fmt)
+            break  # stop when one format works
+        except Exception:
+            continue
+
+    df.rename(columns={'message_date': 'date'}, inplace=True)
     users = []
     messages = []
     i = 0
@@ -35,5 +52,6 @@ def preprocess(data)->pd.DataFrame:
     df['date_of_monthh'] = df['date'].dt.date
     df['hour'] = df['date'].dt.hour
     df['minute'] = df['date'].dt.minute
-    df['week_day'] = df['date'].dt.weekday
+    df['week_day'] = df['date'].dt.weekday  
+ 
     return df
